@@ -16,7 +16,9 @@ type Bet {
   bettor: String!
   prediction: BigInt!
   amount: BigInt!
+  oddsBps: BigInt!
   claimed: Boolean!
+  cashedOut: Boolean!
 }
 
 type Accumulator {

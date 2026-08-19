@@ -6,7 +6,8 @@ contracts:
   - name: FootballBetting
     events:
       - event: "MatchCreated(uint256 matchId, string homeTeam, string awayTeam)"
-      - event: "BetPlaced(uint256 matchId, address bettor, uint8 prediction, uint256 amount)"
+      - event: "BetPlaced(uint256 matchId, address bettor, uint8 prediction, uint256 amount, uint256 oddsBps)"
+      - event: "BetCashedOut(uint256 matchId, address bettor, uint256 amount)"
       - event: "MatchResolved(uint256 matchId, uint8 result)"
       - event: "WinningsClaimed(uint256 matchId, address bettor, uint256 amount)"
       - event: "AccumulatorPlaced(uint256 accId, address bettor, uint256 legCount, uint256 stake, uint256 combinedOddsBps)"
@@ -17,4 +18,4 @@ chains:
     start_block: 0
     contracts:
       - name: FootballBetting
-        address: "0x6bC34F1dbd5fEb8f6B0937846652Be13f27ec9Fb"
+        address: "0xD49620Dad8Ce38d2dD69F97FE955220eF51eF3f9"

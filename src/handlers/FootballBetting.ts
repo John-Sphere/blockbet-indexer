@@ -41,9 +41,23 @@ indexer.onEvent(
       bettor: event.params.bettor,
       prediction: BigInt(prediction),
       amount: event.params.amount,
+      oddsBps: event.params.oddsBps,
       claimed: false,
+      cashedOut: false,
     };
     context.Bet.set(bet);
+  },
+);
+
+indexer.onEvent(
+  { contract: "FootballBetting", event: "BetCashedOut" },
+  async ({ event, context }) => {
+    let matchId = event.params.matchId.toString();
+    let betId = matchId + "-" + event.params.bettor;
+    let bet = await context.Bet.get(betId);
+    if (bet !== undefined) {
+      context.Bet.set({ ...bet, cashedOut: true });
+    }
   },
 );
 
@@ -53,8 +67,7 @@ indexer.onEvent(
     let matchId = event.params.matchId.toString();
     let match = await context.Match.get(matchId);
     if (match !== undefined) {
-      let updated: Match = { ...match, resolved: true, result: BigInt(event.params.result) };
-      context.Match.set(updated);
+      context.Match.set({ ...match, resolved: true, result: BigInt(event.params.result) });
     }
   },
 );
