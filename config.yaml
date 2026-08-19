@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=./node_modules/envio/evm.schema.json
+name: blockbet-indexer
+description: BLOCKBET FootballBetting indexer on Arc Testnet
+disable_default_cross_chain: true
+contracts:
+  - name: FootballBetting
+    events:
+      - event: "MatchCreated(uint256 matchId, string homeTeam, string awayTeam)"
+      - event: "BetPlaced(uint256 matchId, address bettor, uint8 prediction, uint256 amount)"
+      - event: "MatchResolved(uint256 matchId, uint8 result)"
+      - event: "WinningsClaimed(uint256 matchId, address bettor, uint256 amount)"
+      - event: "AccumulatorPlaced(uint256 accId, address bettor, uint256 legCount, uint256 stake, uint256 combinedOddsBps)"
+      - event: "AccumulatorClaimed(uint256 accId, address bettor, uint256 amount)"
+chains:
+  - id: 5042002
+    rpc: https://rpc.testnet.arc.io
+    start_block: 0
+    contracts:
+      - name: FootballBetting
+        address: "0x6bC34F1dbd5fEb8f6B0937846652Be13f27ec9Fb"

@@ -1,0 +1,30 @@
+type Match {
+  id: ID!
+  matchId: BigInt!
+  homeTeam: String!
+  awayTeam: String!
+  totalHome: BigInt!
+  totalDraw: BigInt!
+  totalAway: BigInt!
+  resolved: Boolean!
+  result: BigInt!
+}
+
+type Bet {
+  id: ID!
+  matchId: BigInt!
+  bettor: String!
+  prediction: BigInt!
+  amount: BigInt!
+  claimed: Boolean!
+}
+
+type Accumulator {
+  id: ID!
+  accId: BigInt!
+  bettor: String!
+  legCount: BigInt!
+  stake: BigInt!
+  combinedOddsBps: BigInt!
+  claimed: Boolean!
+}
