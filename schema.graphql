@@ -30,3 +30,14 @@ type Accumulator {
   combinedOddsBps: BigInt!
   claimed: Boolean!
 }
+
+type RouletteBet {
+  id: ID!
+  betId: BigInt!
+  bettor: String!
+  amount: BigInt!
+  numberCount: BigInt!
+  settled: Boolean!
+  winningNumber: BigInt
+  payout: BigInt
+}

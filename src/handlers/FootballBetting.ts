@@ -1,7 +1,7 @@
-import { indexer, type Match, type Bet, type Accumulator } from "envio";
+import { indexer, type Match, type Bet, type Accumulator, type RouletteBet } from "envio";
 
 indexer.onEvent(
-  { contract: "FootballBetting", event: "MatchCreated" },
+  { contract: "BlockBet", event: "MatchCreated" },
   async ({ event, context }) => {
     let match: Match = {
       id: event.params.matchId.toString(),
@@ -19,7 +19,7 @@ indexer.onEvent(
 );
 
 indexer.onEvent(
-  { contract: "FootballBetting", event: "BetPlaced" },
+  { contract: "BlockBet", event: "BetPlaced" },
   async ({ event, context }) => {
     let matchId = event.params.matchId.toString();
     let match = await context.Match.get(matchId);
@@ -50,7 +50,7 @@ indexer.onEvent(
 );
 
 indexer.onEvent(
-  { contract: "FootballBetting", event: "BetCashedOut" },
+  { contract: "BlockBet", event: "BetCashedOut" },
   async ({ event, context }) => {
     let matchId = event.params.matchId.toString();
     let betId = matchId + "-" + event.params.bettor;
@@ -62,7 +62,7 @@ indexer.onEvent(
 );
 
 indexer.onEvent(
-  { contract: "FootballBetting", event: "MatchResolved" },
+  { contract: "BlockBet", event: "MatchResolved" },
   async ({ event, context }) => {
     let matchId = event.params.matchId.toString();
     let match = await context.Match.get(matchId);
@@ -73,7 +73,7 @@ indexer.onEvent(
 );
 
 indexer.onEvent(
-  { contract: "FootballBetting", event: "WinningsClaimed" },
+  { contract: "BlockBet", event: "WinningsClaimed" },
   async ({ event, context }) => {
     let matchId = event.params.matchId.toString();
     let betId = matchId + "-" + event.params.bettor;
@@ -85,7 +85,7 @@ indexer.onEvent(
 );
 
 indexer.onEvent(
-  { contract: "FootballBetting", event: "AccumulatorPlaced" },
+  { contract: "BlockBet", event: "AccumulatorPlaced" },
   async ({ event, context }) => {
     let acc: Accumulator = {
       id: event.params.accId.toString(),
@@ -101,12 +101,45 @@ indexer.onEvent(
 );
 
 indexer.onEvent(
-  { contract: "FootballBetting", event: "AccumulatorClaimed" },
+  { contract: "BlockBet", event: "AccumulatorClaimed" },
   async ({ event, context }) => {
     let accId = event.params.accId.toString();
     let acc = await context.Accumulator.get(accId);
     if (acc !== undefined) {
       context.Accumulator.set({ ...acc, claimed: true });
+    }
+  },
+);
+
+indexer.onEvent(
+  { contract: "BlockBet", event: "RouletteBetPlaced" },
+  async ({ event, context }) => {
+    let bet: RouletteBet = {
+      id: event.params.betId.toString(),
+      betId: event.params.betId,
+      bettor: event.params.bettor,
+      amount: event.params.amount,
+      numberCount: event.params.numberCount,
+      settled: false,
+      winningNumber: undefined,
+      payout: undefined,
+    };
+    context.RouletteBet.set(bet);
+  },
+);
+
+indexer.onEvent(
+  { contract: "BlockBet", event: "RouletteSettled" },
+  async ({ event, context }) => {
+    let betId = event.params.betId.toString();
+    let bet = await context.RouletteBet.get(betId);
+    if (bet !== undefined) {
+      context.RouletteBet.set({
+        ...bet,
+        settled: true,
+        winningNumber: event.params.winningNumber,
+        payout: event.params.payout,
+      });
     }
   },
 );
