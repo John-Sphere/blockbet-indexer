@@ -41,3 +41,12 @@ type RouletteBet {
   winningNumber: BigInt
   payout: BigInt
 }
+
+type AviatorBet {
+  id: ID!
+  betId: BigInt!
+  bettor: String!
+  amount: BigInt!
+  settled: Boolean!
+  payout: BigInt
+}

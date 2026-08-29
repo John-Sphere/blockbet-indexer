@@ -1,4 +1,4 @@
-import { indexer, type Match, type Bet, type Accumulator, type RouletteBet } from "envio";
+import { indexer, type Match, type Bet, type Accumulator, type RouletteBet, type AviatorBet } from "envio";
 
 indexer.onEvent(
   { contract: "BlockBet", event: "MatchCreated" },
@@ -138,6 +138,36 @@ indexer.onEvent(
         ...bet,
         settled: true,
         winningNumber: event.params.winningNumber,
+        payout: event.params.payout,
+      });
+    }
+  },
+);
+
+indexer.onEvent(
+  { contract: "BlockBet", event: "AviatorBetPlaced" },
+  async ({ event, context }) => {
+    let bet: AviatorBet = {
+      id: event.params.betId.toString(),
+      betId: event.params.betId,
+      bettor: event.params.bettor,
+      amount: event.params.amount,
+      settled: false,
+      payout: undefined,
+    };
+    context.AviatorBet.set(bet);
+  },
+);
+
+indexer.onEvent(
+  { contract: "BlockBet", event: "AviatorSettled" },
+  async ({ event, context }) => {
+    let betId = event.params.betId.toString();
+    let bet = await context.AviatorBet.get(betId);
+    if (bet !== undefined) {
+      context.AviatorBet.set({
+        ...bet,
+        settled: true,
         payout: event.params.payout,
       });
     }
