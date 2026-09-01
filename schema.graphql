@@ -50,3 +50,14 @@ type AviatorBet {
   settled: Boolean!
   payout: BigInt
 }
+
+type SwapEvent {
+  id: ID!
+  token: String!
+  trader: String!
+  usdcIn: Boolean!
+  amountIn: BigInt!
+  amountOut: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}

@@ -1,4 +1,4 @@
-import { indexer, type Match, type Bet, type Accumulator, type RouletteBet, type AviatorBet } from "envio";
+import { indexer, type Match, type Bet, type Accumulator, type RouletteBet, type AviatorBet, type SwapEvent } from "envio";
 
 indexer.onEvent(
   { contract: "BlockBet", event: "MatchCreated" },
@@ -171,5 +171,26 @@ indexer.onEvent(
         payout: event.params.payout,
       });
     }
+  },
+);
+
+// Real historical swap data, used to power the price chart — one
+// row per swap, with the block's real timestamp, so the chart is
+// built from genuine on-chain history rather than anything simulated.
+indexer.onEvent(
+  { contract: "BlockSwap", event: "Swap" },
+  async ({ event, context }) => {
+    let id = event.block.number.toString() + "-" + event.logIndex.toString();
+    let swap: SwapEvent = {
+      id,
+      token: event.params.token,
+      trader: event.params.trader,
+      usdcIn: event.params.usdcIn,
+      amountIn: event.params.amountIn,
+      amountOut: event.params.amountOut,
+      timestamp: BigInt(event.block.timestamp),
+      blockNumber: BigInt(event.block.number),
+    };
+    context.SwapEvent.set(swap);
   },
 );

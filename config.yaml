@@ -16,6 +16,11 @@ contracts:
       - event: "RouletteSettled(uint256 betId, address bettor, uint256 winningNumber, uint256 payout)"
       - event: "AviatorBetPlaced(uint256 betId, address bettor, uint256 amount)"
       - event: "AviatorSettled(uint256 betId, address bettor, uint256 payout)"
+  - name: BlockSwap
+    events:
+      - event: "Swap(address indexed token, address indexed trader, bool usdcIn, uint256 amountIn, uint256 amountOut)"
+      - event: "LiquidityAdded(address indexed token, address indexed provider, uint256 usdcAmount, uint256 tokenAmount, uint256 lpMinted)"
+      - event: "LiquidityRemoved(address indexed token, address indexed provider, uint256 usdcAmount, uint256 tokenAmount, uint256 lpBurned)"
 chains:
   - id: 5042002
     rpc: https://rpc.testnet.arc.io
@@ -23,3 +28,5 @@ chains:
     contracts:
       - name: BlockBet
         address: "0xd8F53e3841669dB8Aa4b9a991e78AdE42Ae79D29"
+      - name: BlockSwap
+        address: "0x62a1A511213f9D39beec755B0817Dacc7D9e2cAe"
