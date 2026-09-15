@@ -1,4 +1,4 @@
-import { indexer, type Match, type Bet, type Accumulator, type RouletteBet, type AviatorBet, type SwapEvent } from "envio";
+import { indexer, type Match, type Bet, type Accumulator, type RouletteBet, type AviatorBet, type SwapEvent, type MailMessage, type PublicKeyRegistration } from "envio";
 
 indexer.onEvent(
   { contract: "BlockBet", event: "MatchCreated" },
@@ -174,9 +174,6 @@ indexer.onEvent(
   },
 );
 
-// Real historical swap data, used to power the price chart — one
-// row per swap, with the block's real timestamp, so the chart is
-// built from genuine on-chain history rather than anything simulated.
 indexer.onEvent(
   { contract: "BlockSwap", event: "Swap" },
   async ({ event, context }) => {
@@ -192,5 +189,52 @@ indexer.onEvent(
       blockNumber: BigInt(event.block.number),
     };
     context.SwapEvent.set(swap);
+  },
+);
+
+// BlockMail — a message and any attached payment share the same
+// transaction hash, since sendMailWithPayment emits both events
+// together in one call. MailSent always fires first in that
+// function, so by the time MailPaymentSent is processed, the
+// matching MailMessage entry already exists to update.
+indexer.onEvent(
+  { contract: "BlockMail", event: "MailSent" },
+  async ({ event, context }) => {
+    let message: MailMessage = {
+      id: event.transaction.hash,
+      from: event.params.from,
+      to: event.params.to,
+      ciphertext: event.params.ciphertext,
+      nonce: event.params.nonce,
+      timestamp: event.params.timestamp,
+      paymentToken: undefined,
+      paymentAmount: undefined,
+    };
+    context.MailMessage.set(message);
+  },
+);
+
+indexer.onEvent(
+  { contract: "BlockMail", event: "MailPaymentSent" },
+  async ({ event, context }) => {
+    let message = await context.MailMessage.get(event.transaction.hash);
+    if (message !== undefined) {
+      context.MailMessage.set({
+        ...message,
+        paymentToken: event.params.token,
+        paymentAmount: event.params.amount,
+      });
+    }
+  },
+);
+
+indexer.onEvent(
+  { contract: "BlockMail", event: "PublicKeyRegistered" },
+  async ({ event, context }) => {
+    let reg: PublicKeyRegistration = {
+      id: event.params.wallet,
+      publicKey: event.params.publicKey,
+    };
+    context.PublicKeyRegistration.set(reg);
   },
 );
