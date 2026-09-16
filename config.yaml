@@ -21,6 +21,11 @@ contracts:
       - event: "Swap(address indexed token, address indexed trader, bool usdcIn, uint256 amountIn, uint256 amountOut)"
       - event: "LiquidityAdded(address indexed token, address indexed provider, uint256 usdcAmount, uint256 tokenAmount, uint256 lpMinted)"
       - event: "LiquidityRemoved(address indexed token, address indexed provider, uint256 usdcAmount, uint256 tokenAmount, uint256 lpBurned)"
+  - name: BlockMail
+    events:
+      - event: "MailSent(address indexed from, address indexed to, bytes ciphertext, bytes nonce, uint256 timestamp)"
+      - event: "MailPaymentSent(address indexed from, address indexed to, address indexed token, uint256 amount, uint256 timestamp)"
+      - event: "PublicKeyRegistered(address indexed wallet, bytes publicKey)"
 chains:
   - id: 5042002
     rpc: https://rpc.testnet.arc.io
@@ -30,3 +35,5 @@ chains:
         address: "0xd8F53e3841669dB8Aa4b9a991e78AdE42Ae79D29"
       - name: BlockSwap
         address: "0x62a1A511213f9D39beec755B0817Dacc7D9e2cAe"
+      - name: BlockMail
+        address: "0x7e45488b1529E5Fb396158819552751d36826733"
