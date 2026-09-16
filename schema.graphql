@@ -61,19 +61,3 @@ type SwapEvent {
   timestamp: BigInt!
   blockNumber: BigInt!
 }
-
-type MailMessage {
-  id: ID!
-  from: String!
-  to: String!
-  ciphertext: String!
-  nonce: String!
-  timestamp: BigInt!
-  paymentToken: String
-  paymentAmount: BigInt
-}
-
-type PublicKeyRegistration {
-  id: ID!
-  publicKey: String!
-}
